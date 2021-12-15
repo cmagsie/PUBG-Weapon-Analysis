@@ -1,0 +1,111 @@
+---
+title: "PUBG Weapon"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+Loading the dataset to r
+```{r}
+PUBG <- read.csv("PUBGweapon.csv")
+PUBG
+```
+
+Checking the overview of the dataset
+```{r}
+str(PUBG)
+```
+The dataset has 20 variables and 44 observations.
+
+
+Scatterplot of bullet speed of each weapon
+```{r}
+ggplot(PUBG, aes(x = Weapon.Name, y = Bullet.Speed, color = x)) +
+  geom_point(colour = "bisque4")
+
+Best_BS <- PUBG%>%
+  filter(Bullet.Speed >= 600)
+
+str(Best_BS)
+
+ggplot(Best_BS, aes(x = Weapon.Name, y = Bullet.Speed)) +
+   geom_point(colour = "bisque4")
+```
+
+
+Checking on correlation and coefficients between Range and Damage possible of the 21 weapons.
+```{r}
+lm_dmgrng <- lm(Damage ~ Range, data = Best_BS)
+lm_dmgrng
+summary(lm_dmgrng)
+cor(Best_BS$Damage, Best_BS$Range)
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=Damage)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+BDMG(Body Damage) and Range Comparison
+```{r}
+Best_BS%>%
+  ggplot(aes(x=Range, y=BDMG_0, color = Weapon.Name)) +
+  geom_point() 
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=BDMG_1, color = Weapon.Name)) +
+  geom_point() 
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=BDMG_2, color = Weapon.Name)) +
+  geom_point() 
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=BDMG_3, color = Weapon.Name)) +
+  geom_point()
+```
+
+
+HDMG(Head Damage) and Range Comparison
+```{r}
+Best_BS%>%
+  ggplot(aes(x=Range, y=HDMG_0, color = Weapon.Name)) +
+  geom_point() 
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=HDMG_1, color = Weapon.Name)) +
+  geom_point() 
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=HDMG_2, color = Weapon.Name)) +
+  geom_point()
+
+Best_BS%>%
+  ggplot(aes(x=Range, y=HDMG_3, color = Weapon.Name)) +
+  geom_point()
+```
+
+
+Filtering it down, out of the 21 weapons with best bullet speed to best damages.
+```{r}
+Best_BS_DMG <- Best_BS%>%
+  filter(HDMG_3 > 60, BDMG_3 > 30 )
+
+Best_BS_DMG
+```
+
+
+
+
+
+
+
